@@ -23,23 +23,26 @@ source bin/activate
 #6. assuming venv-viral-ngs in 5. and viral-ngs-etc in 2. are in the same parent directory while your pwd is venv-viral-ngs
 pip install -r ../viral-ngs-etc/viral-ngs/requirements.txt
 pip install -r ../viral-ngs-etc/viral-ngs/requirements-pipes.txt
-source deactivate
+deactivate
 
 #7. back to parent directory for venv-viral-ngs, viral-ngs-etc, and easy-deploy-viral-ngs.sh
 cd ..
 
-#8. Setting up an analysis directory. It should be in viral-ngs-etc/projects/<project_name>
+#8. Activate/Load viral-ngs
+source ./easy-deploy-viral-ngs.sh load
+
+#9. Setting up an analysis directory. It should be in viral-ngs-etc/projects/<project_name>
 ./easy-deploy-viral-ngs.sh create-project <project_name>
 
-#9. cd to the analysis directory created in 8. and create symbolic links to the the viral-ngs virtual environment created in 5.
+#10. cd to the analysis directory created in 8. and create symbolic links to the the viral-ngs virtual environment created in 5.
 ln -s /path/to/venv-viral-ngs venv
 
-#10. Copy each of the raw sample bam files to the 00_raw/ directory and ensure the file names follow the convention of {sample}.bam
-#11. For each of the samples copied into the 00_raw/ directory, list the base names (i.e without the suffix .bam) into the text files
+#11. Copy each of the raw sample bam files to the 00_raw/ directory and ensure the file names follow the convention of {sample}.bam
+#12. For each of the samples copied into the 00_raw/ directory, list the base names (i.e without the suffix .bam) into the text files
 # samples-depletion.txt, samples-assembly.txt and samples-assembly-failures.txt. Only fill in the samples-runs.txt and
 # samples-metagenomics.txt if interested in intrahost and metagenomics analysis in the pipeline.
 
-#12. Modifying the config.yaml file
+#13. Modifying the config.yaml file
 #If getting reference from genbank using an accession (making sure you are online at the time of the analysis), 
 accessions_for_ref_genome_build:
   - "KC731482"
@@ -65,7 +68,7 @@ email_point_of_contact_for_ncbi: "john_doe@research_institute.org"
 # Make sure the data/ directory in the project directory has directories matching locations specified in config.yaml exactly
 
 
-#13. Modifying the Snakefile
+#14. Modifying the Snakefile
 # Comment out the parts of the pipeline you do not intend to run, e.g. demultiplexing, metagenomics, etc.
 # I also found the line:  #config["data_dir"]+'/'+config["subdirs"]["intrahost"] +'/isnvs.vcf.gz',
 # to be problematic if not commented out even when intrahost analysis was commented out above
