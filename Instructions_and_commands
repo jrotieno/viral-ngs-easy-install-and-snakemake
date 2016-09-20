@@ -9,7 +9,7 @@ wget https://raw.githubusercontent.com/broadinstitute/viral-ngs/master/easy-depl
 #3. Activate/Load viral-ngs
 source ./easy-deploy-viral-ngs.sh load
 
-#4. Register your copy of GATK. Note, this is path to jar, not the jar itself.
+#4. Register your copy of GATK.
 gatk-register /path/to/GATK.jar
 
 #Using the Snakemake pipelines
