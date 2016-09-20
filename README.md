@@ -1,4 +1,4 @@
-# viral-ngs easy-install and-snakemake
+# viral-ngs easy-install and snakemake
 
 The viral-ngs pipeline is fantastic, and that's why I wrote this.
 
