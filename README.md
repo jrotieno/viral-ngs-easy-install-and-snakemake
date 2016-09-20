@@ -1,0 +1,1 @@
+# viral-ngs-easy-install-and-snakemake
