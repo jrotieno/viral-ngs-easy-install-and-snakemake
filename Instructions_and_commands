@@ -12,6 +12,8 @@ source ./easy-deploy-viral-ngs.sh load
 #4. Register your copy of GATK.
 gatk-register /path/to/GATK.jar
 
+source deactivate
+
 #Using the Snakemake pipelines
 #5. Create a virtual environment within which all of the viral-ngs dependencies can be installed
 pyvenv-3.4 venv-viral-ngs
