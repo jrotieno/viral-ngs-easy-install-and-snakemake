@@ -1,0 +1,81 @@
+#Easy deployment script for viral-ngs
+
+#1. Get the install script:
+wget https://raw.githubusercontent.com/broadinstitute/viral-ngs/master/easy-deploy-script/easy-deploy-viral-ngs.sh && chmod a+x ./easy-deploy-viral-ngs.sh
+
+#2. Install viral-ngs
+./easy-deploy-viral-ngs.sh setup
+
+#3. Activate/Load viral-ngs
+source ./easy-deploy-viral-ngs.sh load
+
+#4. Register your copy of GATK. Note, this is path to jar, not the jar itself.
+gatk-register /path/to/GATK.jar
+
+#Using the Snakemake pipelines
+#5. Create a virtual environment within which all of the viral-ngs dependencies can be installed
+pyvenv-3.4 venv-viral-ngs
+cd venv-viral-ngs
+source bin/activate
+
+#6. assuming venv-viral-ngs in 5. and viral-ngs-etc in 2. are in the same parent directory while your pwd is venv-viral-ngs
+pip install -r ../viral-ngs-etc/viral-ngs/requirements.txt
+pip install -r ../viral-ngs-etc/viral-ngs/requirements-pipes.txt
+source deactivate
+
+#7. back to parent directory for venv-viral-ngs, viral-ngs-etc, and easy-deploy-viral-ngs.sh
+cd ..
+
+#8. Setting up an analysis directory. It should be in viral-ngs-etc/projects/<project_name>
+./easy-deploy-viral-ngs.sh create-project <project_name>
+
+#9. cd to the analysis directory created in 8. and create symbolic links to the the viral-ngs virtual environment created in 5.
+ln -s /path/to/venv-viral-ngs venv
+
+#10. Copy each of the raw sample bam files to the 00_raw/ directory and ensure the file names follow the convention of {sample}.bam
+#11. For each of the samples copied into the 00_raw/ directory, list the base names (i.e without the suffix .bam) into the text files
+# samples-depletion.txt, samples-assembly.txt and samples-assembly-failures.txt. Only fill in the samples-runs.txt and
+# samples-metagenomics.txt if interested in intrahost and metagenomics analysis in the pipeline.
+
+#12. Modifying the config.yaml file
+#If getting reference from genbank using an accession (making sure you are online at the time of the analysis), 
+accessions_for_ref_genome_build:
+  - "KC731482"
+email_point_of_contact_for_ncbi: "john_doe@research_institute.org"
+
+#If you already have an indexed reference fasta file to use, with the same accession as above, then you'll have to edit
+# the assembly.rules in /viral-ngs-etc/conda-env/opt/viral-ngs-1.11.0/pipes/rules/assembly.rules
+# Look for the line:    expand( '{refDir}/'+'{ref_name}.fasta', refDir=config["ref_genome_dir"], ref_name="reference" )
+# change the ref name to:     expand( '{refDir}/'+'{ref_name}.fasta', refDir=config["ref_genome_dir"], ref_name="KC731482" )
+# also look for line:    refGenome=os.path.join(config["ref_genome_dir"],"reference"+".fasta"),
+# and change reference name to:     refGenome=os.path.join(config["ref_genome_dir"],"KC731482"+".fasta"),
+
+# For the bmTagger databases, make sure that the path indicated point to the prefix of the individual database components
+# such that if you indicate /path/to/viral_ngs_databases/GRCh37.68_ncRNA-GRCh37.68_transcripts-HS_rRNA_mitRNA
+# the script would expect to find the files GRCh37.68_ncRNA-GRCh37.68_transcripts-HS_rRNA_mitRNA.bitmask .amp, etc in the directory
+# viral_ngs_databases. So, point to script to where these files are such that GRCh37.68_ncRNA-GRCh37.68_transcripts-HS_rRNA_mitRNA is the prefix
+# The same applies to the other databases
+# If there's a database you won't be using, comment it out, otherwise the script will look for it and throw an error then stop
+
+# If you also don't have a novoalign license for the parallelized version, comment it out in the config file. The pipeline
+# will resort to using it's own that is free and non-parallellized.
+
+# Make sure the data/ directory in the project directory has directories matching locations specified in config.yaml exactly
+
+
+#13. Modifying the Snakefile
+# Comment out the parts of the pipeline you do not intend to run, e.g. demultiplexing, metagenomics, etc.
+# I also found the line:  #config["data_dir"]+'/'+config["subdirs"]["intrahost"] +'/isnvs.vcf.gz',
+# to be problematic if not commented out even when intrahost analysis was commented out above
+
+# You will most likely run into the error; Error, the Chrysalis process failed:
+# and get the report: In nearly all cases, this is related to not having the stacksize set to unlimited, a prerequisite to running Trinity.
+# if on mac
+ulimit -a
+
+# It will most likely show that the stack size  equal 8192 (8MB)
+# Increase this by ulimit -s 65532
+# The other suggestions you will find on google will not work e.g. ulimit -s unlimited
+
+# Run the pipeline within the analysis directory
+snakemake 
