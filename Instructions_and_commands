@@ -34,7 +34,7 @@ source ./easy-deploy-viral-ngs.sh load
 #9. Setting up an analysis directory. It should be in viral-ngs-etc/projects/<project_name>
 ./easy-deploy-viral-ngs.sh create-project <project_name>
 
-#10. cd to the analysis directory created in 8. and create symbolic links to the the viral-ngs virtual environment created in 5.
+#10. cd to the analysis directory created in 9. and create symbolic links to the the viral-ngs virtual environment created in 5.
 ln -s /path/to/venv-viral-ngs venv
 
 #11. Copy each of the raw sample bam files to the 00_raw/ directory and ensure the file names follow the convention of {sample}.bam
