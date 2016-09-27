@@ -79,8 +79,8 @@ email_point_of_contact_for_ncbi: "john_doe@research_institute.org"
 ulimit -a
 
 # It will most likely show that the stack size  equal 8192 (8MB)
-# Increase this by ulimit -s 65532
-# The other suggestions you will find on google will not work e.g. ulimit -s unlimited
+# Increase this using the following command as the other suggestions you will find on google (e.g. ulimit -s unlimited) will not work 
+ulimit -s 65532
 
 # Run the pipeline within the analysis directory
 snakemake 
