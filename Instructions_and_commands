@@ -79,7 +79,8 @@ email_point_of_contact_for_ncbi: "john_doe@research_institute.org"
 ulimit -a
 
 # It will most likely show that the stack size  equal 8192 (8MB)
-# Increase this using the following command as the other suggestions you will find on google (e.g. ulimit -s unlimited) will not work 
+# Increase this using the following command as the other suggestions you will find on google (e.g. ulimit -s unlimited) will not work
+# Note that this works only for the current tab and you'll have to set it again if you start a new tab/session
 ulimit -s 65532
 
 # Run the pipeline within the analysis directory
