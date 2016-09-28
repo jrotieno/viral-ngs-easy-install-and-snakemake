@@ -22,7 +22,7 @@ source bin/activate
 
 #6. assuming venv-viral-ngs in 5. and viral-ngs-etc in 2. are in the same parent directory while your pwd is venv-viral-ngs
 pip install -r ../viral-ngs-etc/viral-ngs/requirements.txt
-pip install -r ../viral-ngs-etc/viral-ngs/requirements-pipes.txt
+pip3 install -r ../viral-ngs-etc/viral-ngs/requirements-pipes.txt
 deactivate
 
 #7. back to parent directory for venv-viral-ngs, viral-ngs-etc, and easy-deploy-viral-ngs.sh
